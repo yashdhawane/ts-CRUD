@@ -1,0 +1,71 @@
+{
+	"info": {
+		"_postman_id": "7c37ff33-df32-4cba-ab58-f2ff856f1af5",
+		"name": "Task management",
+		"description": "Name: Task Management API  \nDescription:  \nA RESTful API for managing tasks with user authentication. This API allows users to register, login, and perform CRUD operations on their tasks.\n\nBase URL: {{BASE_URL}} (e.g. https://ts-crud-n54r.onrender.com)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41188962"
+	},
+	"item": [
+		{
+			"name": "User Authentication",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"description": "## **User Authentication API**\n\n### **Base URL**\n\n[https://ts-crud-n54r.onrender.com](https://ts-crud-n54r.onrender.com)\n\n---\n\n### **POST /register**\n\n#### **Description**\n\nRegisters a new user with a unique username and a hashed password.\n\n#### **Request**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/api/users/register`\n    \n- **Headers**:\n    \n    - `Content-Type: application/json`\n        \n- **Body Parameters** (JSON):\n    \n    - `username` (string, required): The unique username of the user.\n        \n    - `password` (string, required): The password for the user.\n        \n\n#### **Responses**\n\n- { \"message\": \"User registered successfully\"}\n    \n- { \"message\": \"User already exists\"}\n    \n- { \"error\": \"\"}\n    \n\n#### **Error Handling**\n\n- The API returns a 400 status code if the username already exists in the database.\n    \n- Unexpected errors return a 500 status code with the error message.\n    \n\n---\n\n### **POST /login**\n\n#### **Description**\n\nAuthenticates a user by verifying their username and password. If valid, returns a JWT token for further authenticated requests.\n\n#### **Request**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/api/users/login`\n    \n- **Headers**:\n    \n    - `Content-Type: application/json`\n        \n- **Body Parameters** (JSON):\n    \n    - `username` (string, required): The username of the user.\n        \n    - `password` (string, required): The password for the user.\n        \n\n#### **Responses**\n\n- { \"message\": \"User signed in successfully\", \"token\": \"\"}\n    \n- { \"message\": \"Invalid username or password\"}\n    \n- { \"message\": \"Error signing in user\", \"error\": \"\"}\n    \n\n#### **Error Handling**\n\n- Returns a 400 status code if the username doesn't exist or the password is incorrect.\n    \n- Unexpected errors return a 500 status code with the error message.\n    \n\n---\n\n### **Authentication Workflow**\n\n1. **Register User**:\n    \n    - Sends a `POST /register` request with `username` and `password`.\n        \n    - The password is hashed using `bcrypt` before storing it in the database.\n        \n    - On success, the user receives a confirmation message.\n        \n2. **Login User**:\n    \n    - Sends a `POST /login` request with `username` and `password`.\n        \n    - The system verifies the username and compares the password using `bcrypt.compare`.\n        \n    - If valid, a JWT token is generated using `jsonwebtoken` and returned to the user.\n        \n\n---\n\n### **Technical Notes**\n\n1. **Password Hashing**:\n    \n    - Passwords are hashed with `bcrypt` using a salt round of 10 to enhance security.\n        \n2. **JWT Token**:\n    \n    - A JWT token is signed using `jsonwebtoken` and an environment variable `JWT_SECRET`.\n        \n    - Token expiry is set to 1 hour.\n        \n3. **Error Handling**:\n    \n    - Errors are caught and returned as JSON with appropriate HTTP status codes.\n        \n4. **Environment Variables**:\n    \n    - `process.env.JWT_SECRET` is used for JWT signing. Ensure this is set securely in your `.env` file.\n        \n5. **@ts-ignore**:\n    \n    - TypeScript ignores are used to bypass type-checking issues. Ensure proper types are set up for production-ready code."
+		},
+		{
+			"name": "task",
+			"item": [
+				{
+					"name": "get",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "add",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"description": "## **Task Management API**\n\n### **Base URL**\n\n[https://ts-crud-n54r.onrender.com](https://ts-crud-n54r.onrender.com)  \n\n---\n\n### **Middleware**\n\nAll routes are protected by `authMiddleware`, which verifies user authentication and injects the authenticated user's `id` into `req.user`.\n\n---\n\n### **GET /get**\n\n#### **Description**\n\nFetches all tasks associated with the authenticated user.\n\n#### **Request**\n\n- **Method**: `GET`\n    \n- **Endpoint**: `/api/tasks/get`\n    \n- **Headers**:\n    \n    - `Authorization` (required): Bearer token for authentication.\n        \n\n#### **Responses**\n\n- { \"message\": \"task\", \"AllTask\": \\[ { \"_id\": \"taskId\", \"title\": \"Task Title\", \"description\": \"Task Description\", \"status\": \"Pending\", \"userId\": \"userId\" } \\]}\n    \n- { \"error\": \"\"}\n    \n\n---\n\n### **POST /add**\n\n#### **Description**\n\nCreates a new task for the authenticated user.\n\n#### **Request**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/api/tasks/add`\n    \n- **Headers**:\n    \n    - `Content-Type`: `application/json`\n        \n    - `Authorization`: Bearer token for authentication.\n        \n- **Body Parameters**:\n    \n    - `title` (string, required): Title of the task.\n        \n    - `description` (string, required): Description of the task.\n        \n    - `status` (string, optional): Status of the task (e.g., Pending, Completed).\n        \n\n#### **Responses**\n\n- { \"message\": \"Task created\", \"task\": { \"_id\": \"taskId\", \"title\": \"Task Title\", \"description\": \"Task Description\", \"status\": \"Pending\", \"userId\": \"userId\" }}\n    \n- { \"message\": \"Error creating task\", \"error\": \"\"}\n    \n\n---\n\n### **DELETE /delete/:id**\n\n#### **Description**\n\nDeletes a task by ID if it belongs to the authenticated user.\n\n#### **Request**\n\n- **Method**: `DELETE`\n    \n- **Endpoint**: `/api/tasks/delete/:id`\n    \n- **Headers**:\n    \n    - `Authorization`: Bearer token for authentication.\n        \n- **Path Parameters**:\n    \n    - `id` (string, required): The ID of the task to delete.\n        \n\n#### **Responses**\n\n- { \"message\": \"Task deleted\"}\n    \n- { \"message\": \"Task not found or unauthorized\"}\n    \n- { \"message\": \"Error deleting task\", \"error\": \"\"}\n    \n\n---\n\n### **PUT /:id**\n\n#### **Description**\n\nUpdates a task by ID. Allows modification of title, description, and status.\n\n#### **Request**\n\n- **Method**: `PUT`\n    \n- **Endpoint**: `/:id`\n    \n- **Headers**:\n    \n    - `Content-Type`: `application/json`\n        \n    - `Authorization`: Bearer token for authentication.\n        \n- **Path Parameters**:\n    \n    - `id` (string, required): The ID of the task to update.\n        \n- **Body Parameters**:\n    \n    - `title` (string, optional): Updated title of the task.\n        \n    - `description` (string, optional): Updated description of the task.\n        \n    - `status` (string, optional): Updated status of the task.\n        \n\n#### **Responses**\n\n- { \"message\": \"Task updated\", \"task\": { \"_id\": \"taskId\", \"title\": \"Updated Title\", \"description\": \"Updated Description\", \"status\": \"Completed\", \"userId\": \"userId\" }}\n    \n- { \"message\": \"Error updating task\", \"error\": \"\"}\n    \n\n---\n\n### **Technical Notes**\n\n1. **Middleware**:\n    \n    - `authMiddleware` ensures that only authenticated users can access the routes.\n        \n    - It injects the user's `id` into `req.user`, which is used to associate tasks with their owners.\n        \n2. **Task Model**:\n    \n    - { \"_id\": \"string\", \"title\": \"string\", \"description\": \"string\", \"status\": \"string\", \"userId\": \"string\"}\n        \n3. **Error Handling**:\n    \n    - All unexpected errors return a `500 Internal Server Error` with an error message.\n        \n4. **@ts-ignore**:\n    \n    - TypeScript ignores are used to bypass type-checking for `req.user`. For production-ready code, you should extend the `Request` interface to include the `user` property.\n        \n\n---"
+		}
+	]
+}
